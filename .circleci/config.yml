@@ -1,21 +1,37 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
 version: 2
 jobs:
-  test:
+  build:
     docker:
+      # specify the version you desire here
       - image: circleci/node:10.15.3-browsers
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
     steps:
       - checkout
+
+      # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-npmcache-{{ checksum ".nvmrc" }}-{{ checksum "package-lock.json" }}
-            - v1-npmcache-{{ checksum ".nvmrc" }}
-            - v1-npmcache
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
       - run: npm ci
+
       - save_cache:
-          key: v1-npmcache-{{ checksum ".nvmrc" }}-{{ checksum "package-lock.json" }}
           paths:
-            - "~/.npm"
-      - run:
-          name: Execute the e2e tests
-          command: npm test
-          
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: npm test

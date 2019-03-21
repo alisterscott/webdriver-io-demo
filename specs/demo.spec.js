@@ -6,6 +6,6 @@ describe( 'WebDriverJsDemo', function() {
 	it( 'can wait for an element to appear', function() {
         browser.url( 'https://webdriverjsdemo.github.io/' );
         const childElement = $( '#elementappearsparent' );
-        childElement.waitForDisplayed( 10000 );
+        //childElement.waitForDisplayed( 10000 );
 	} );
 } );

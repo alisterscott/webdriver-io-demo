@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/node:10.15.3-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-npmcache-{{ checksum ".nvmrc" }}-{{ checksum "package-lock.json" }}
+            - v1-npmcache-{{ checksum ".nvmrc" }}
+            - v1-npmcache
+      - run: npm ci
+      - save_cache:
+          key: v1-npmcache-{{ checksum ".nvmrc" }}-{{ checksum "package-lock.json" }}
+          paths:
+            - "~/.npm"
+      - run:
+          name: Execute the e2e tests
+          command: npm test
+          
